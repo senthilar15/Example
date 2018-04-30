@@ -1,0 +1,85 @@
+spring:
+    application:
+        name: monarch-gateway
+
+debug: false
+        
+jwt:
+  security:
+    key: M0N@RCH!SW00$H
+    
+management:
+    context-path: /admin
+    health:
+        mail:
+            enabled: false # When using the MailService,configure an SMTP server and set this to true
+            
+server:
+    port: 8001
+    tomcat:
+        protocol-header: x-forwarded-proto
+        remote-ip-header: x-forwarded-for
+    ssl:
+        enabled: false
+
+logging.level.com.sgk: DEBUG
+logging.level.org.springframework.security: DEBUG
+
+ribbon.ReadTimeout: 60000
+ribbon.ConnectTimeout: 60000 
+ribbon.eureka.enabled: false
+
+hystrix.command.default.execution.timeout.enabled: false
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 60000
+
+feign:
+  hystrix:
+    enabled: true
+    
+zuul:
+    addHostHeader: true
+    host:
+        connect-timeout-millis: 60000
+        socket-timeout-millis: 60000
+
+webapp:
+    cssPath: http://monarch2-webapp-qa.s3-website-us-east-1.amazonaws.com/static/css/app.8c66fb8af87585f1cfe4370fa5f7dd2a.css
+    manifestJsPath: http://monarch2-webapp-qa.s3-website-us-east-1.amazonaws.com/static/js/manifest.033708ccb9749133ad3c.js
+    vendorJsPath: http://monarch2-webapp-qa.s3-website-us-east-1.amazonaws.com/static/js/vendor.bc98482c9c1ef0eee916.js
+    appJsPath: http://monarch2-webapp-qa.s3-website-us-east-1.amazonaws.com/static/js/app.908c642cc1dc81decf6d.js
+    
+js:
+    config:
+        auth:
+            region: us-west-2
+            cognitoPoolId: us-west-2_LKErDF0Hw
+            cognitoClientId: 7krsq360fadsq5tlfot02gs8bo
+        feed:
+            key10: value10
+            key20: value20
+security:
+    ignoredUri:
+        startsWith: [/ui/auth,/js,/users]
+        endsWith: [js,css,ttf,otf,eot,svg,woff,woff2,ico,gif,png,jpg,jpeg]
+        equals: []
+    saml2:
+        metadata-url: classpath:/saml/sgk-okta-metadata-dev.xml
+        host-protocol: https
+        host-name: ecs-first-run-alb-1341622946.us-east-1.elb.amazonaws.com
+        host-url: https://ecs-first-run-alb-1341622946.us-east-1.elb.amazonaws.com
+        der-path: classpath:/saml/localhost.key.der
+        pem-path: classpath:/saml/localhost.pem
+
+securityKey:
+  api:
+    url: http://localhost:8080/resources/api-security-keys/
+
+
+authData:
+    api:
+        url: https://studio-qa.schawk.com
+        type: master-monarch-user
+        resourcePath: /api/auth/data/{0}/{1}
+        accessKey: 463fdd02-0f23-49bf-9c55-64bd3423949a
+        secretKey: mosrc/3Tu0vpXnrXgwq0wJl74gGMZxKikux5v2wu09ByWfMQ1O9znunv81yQC/b6Yj+OKDmbAhyCyZxItV8HoQ==
+    defaultRoles: '[{ "geos": [{ "name": "NA","geo_code": "NA","id": 1}, {"name": "CN","geo_code": "CN","id": 2}, {"name": "WE","geo_code": "WE","id": 3}, {"name": "JP","geo_code": "JP","id": 4}, {"name": "ECS","geo_code": "ECS","id": 6}, {"name": "TMALL","geo_code": "TMALL","id": 7}, {"name": "HK","geo_code": "HK","id": 8}, {"name": "EM","geo_code": "EM","id": 9}, {"name": "DSG","geo_code": "DSG","id": 10}, {"name": "FTL","geo_code": "FTL","id": 11}, {"name": "FNL","geo_code": "FNL","id": 12}, {"name": "XP","geo_code": "XP","id": 5}, {"name": "XA","geo_code": "XA","id": 13}],"channels": [{"name": "Boot Room","id": 1}, {"name": "Nike App","id": 2}, {"name": "Nike.com","id": 3}, {"name": "SNKRS","id": 4}],"layouts": [{"name": "Buy Master Layout","id": "buyMasterLayout"}] }] '

@@ -1,0 +1,79 @@
+try {
+    load("nashorn:mozilla_compat.js");
+} catch (e) {
+  
+}
+
+importClass(org.w3c.dom.Node);
+importClass(org.w3c.dom.NodeList);
+importClass(org.w3c.dom.Element);
+
+//importClass(Packages.com.motorola.minn_csr_ah.axis.services.CSREAISoapServices.SoapServiceServiceLocator);
+importClass(Packages.com.motorola.minn_csr_ah.axis.services.CSREAISoapServices.SoapService);
+
+importClass(Packages.com.csdcsystems.amanda.service.eai.EaiUtil);
+importPackage(Packages.com.csdcsystems.amanda.custom);
+
+importPackage(Packages.org.slf4j);
+
+
+
+
+function execute(xml, eaiXml){
+	
+       var LOGGER = LoggerFactory.getLogger("com.csdcsystems.amanda.service.eai.EaiCustomAdaptor");
+       LOGGER.debug("EaiMotorola311Put.send_WebService start");
+       LOGGER.debug(xml);
+       var wsClient =  motoclient(xml, eaiXml);
+       return wsClient.callMotorolla();
+   
+}
+
+var motoclient = function(xml, eaiXml)  {
+   
+   var LOGGER = LoggerFactory.getLogger("eai.custom.script.EaiMotorola311Put.Callable");
+   var rootNode  = eaiXml.getRoot(); 
+   var toWebServiceURL    = rootNode.getStringValue("ToWebServiceURL").trim();
+   var toWebServiceIn0    = rootNode.getStringValue("ToWebServiceIn0");
+  
+  
+  function validate() {
+   
+      if( (toWebServiceURL == null ) || (toWebServiceURL.length() < 1)){
+          LOGGER.error("ToWebServiceURL should not be empty")
+       	  throw new Error("WebService: XML-P requires ToWebServiceURL");
+       }
+
+        if (rootNode.getChildNode("payload") == null) {
+           		LOGGER.error("WebService: XML-P requires payload")
+       	   		throw new Error("WebService: XML-P requires payload")
+		}
+
+        if ((toWebServiceIn0 == null) || (toWebServiceIn0.length() < 1)) {
+			toWebServiceIn0 = "AMD-TEST";
+        }
+
+  }
+
+  function callService() {
+    var payloadContent  = EaiUtil.toString(rootNode.getChildNode("payload").getElement(), false);
+   
+    payloadContent = payloadContent.replaceAll("(?i)<payload>","");
+    payloadContent = payloadContent.replaceAll("(?i)</payload>","");
+    LOGGER.info("PayLoad {} >> ",payloadContent);
+
+    // var locator = new SoapServiceServiceLocator(toWebServiceURL);
+     var SoapServiceServiceLocator = Java.type("com.motorola.minn_csr_ah.axis.services.CSREAISoapServices.SoapServiceServiceLocator");
+     var locator = new SoapServiceServiceLocator(toWebServiceURL);
+     var stub = locator.getCSREAISoapServices();
+     return stub.send_to_csr(toWebServiceIn0, payloadContent);
+  }
+
+  return {
+    callMotorolla: function() {
+      validate();
+      return callService();
+    }
+  };   
+}
+
